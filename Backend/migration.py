@@ -70,6 +70,7 @@ if not os.path.exists(database_path):
     cur.execute('''
         CREATE TABLE Products (
             product_id INTEGER PRIMARY KEY,
+            image VARCHAR(100) NOT NULL,
             name VARCHAR(100) NOT NULL,
             description TEXT NOT NULL,
             price DECIMAL(10, 2) NOT NULL,
