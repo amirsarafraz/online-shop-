@@ -380,6 +380,108 @@ def update_order_by_id(order_id):
     updated_order = update_order(order_id, user_id, order_date, total_amount, status)
     return jsonify(updated_order), 200
 
+
+
+
+#order-detail crud function
+def get_all_orderDetail():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM OrderDetails')
+    details = cur.fetchall()
+    final_details = []
+    for detail in details:
+        final_details.append({
+            "order_detail_id": detail[0],
+            "order_id": detail[1],
+            "product_id": detail[2],
+            "quantity": detail[3],
+            "unit_price": detail[4],
+        })
+    conn.close()
+    return final_details
+
+def get_details(id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM OrderDetails WHERE order_detail_id = ?',(id,))
+    detail = cur.fetchone()
+    conn.close()
+    final_details = {
+            "order_detail_id": detail[0],
+            "order_id": detail[1],
+            "product_id": detail[2],
+            "quantity": detail[3],
+            "unit_price": detail[4],
+    }
+    return final_details
+
+def create_detail(order_id, product_id,quantity,unit_price):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO OrderDetails (order_id,product_id,quantity,unit_price) VALUES (?, ?, ?,?)', (order_id,product_id,quantity,unit_price,))
+    conn.commit()
+    conn.close()
+    return "ok"
+
+def delete_detail(id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('DELETE FROM OrderDetails WHERE order_detail_id = ?', (id,))
+    conn.commit()
+    conn.close()
+    
+def update_detail(order_id, product_id,quantity,unit_price,id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('UPDATE OrderDetails SET order_id = ?, product_id = ?, quantity = ?, unit_price = ? WHERE order_detail_id = ?', (order_id, product_id,quantity,unit_price,id))
+    conn.commit()
+    conn.close()
+    return get_details(id)
+
+# order-detail routes
+@app.route('/details', methods=['GET'])
+def list_details():
+    details = get_all_orderDetail()
+    response = jsonify(details)
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
+    response.headers['Content-Range'] = len(details)
+    return response
+
+@app.route('/detail/<int:id>', methods=['GET'])
+def detail(id):
+    detail = get_details(id)
+    if detail is None:
+        return '', 404
+    return jsonify(detail), 200
+
+@app.route('/newDetail', methods=['POST'])
+def add_details():
+    order_id = request.json['order_id']
+    product_id = request.json['product_id']
+    quantity = request.json['quantity']
+    unit_price = request.json['unit_price']
+    detail_id = create_detail(order_id, product_id, quantity,unit_price)
+    return "ok", 201
+
+@app.route('/delDetail/<int:id>', methods=['DELETE'])
+def delete_detail_by_id(id):
+    delete_detail(id)
+    return jsonify({"id":id}), 200
+
+@app.route('/upDetail/<int:id>', methods=['PUT'])
+def update_detail_by_id(id):
+    order_id = request.json['order_id']
+    product_id = request.json['product_id']
+    quantity = request.json['quantity']
+    unit_price = request.json['unit_price']
+    updated = update_detail(order_id, product_id, quantity,unit_price,id)
+    return jsonify(updated), 200
+#-------------------------------------------------
+
+
+
+
 # @app.route('/Products', methods=['POST'])
 # def add_product():
 #     name = request.json['name']
