@@ -52,6 +52,13 @@ if not os.path.exists(database_path):
     conn = sqlite3.connect(database_path)
     cur = conn.cursor()
 
+
+
+
+
+
+
+
     # Create tables
     cur.execute('''
         CREATE TABLE Users (
