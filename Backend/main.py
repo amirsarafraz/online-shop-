@@ -4,6 +4,7 @@ from flask_cors import CORS, cross_origin
 import io
 from datetime import datetime
 from fileinput import filename 
+from hashlib import md5
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -58,11 +59,12 @@ def get_users(users_id):
         }
     conn.close()
     return final_users
-def create_user(username, password_hash,email,phone_number, role,default_shipping_address):
+def create_user(Name, Password, Email, Phone, Role,address ):
     conn = get_db_connection()
     cur = conn.cursor()
-    registration_date = datetime.today().strftime('%Y-%m-%d')
-    cur.execute('INSERT INTO Users (username, password_hash,email,phone_number,registration_date,role,default_shipping_address) VALUES (?, ?, ?, ? , ?, ?, ?)', (username, password_hash,email,phone_number,registration_date, role,default_shipping_address))
+    password_hash = md5(Password.encode()).hexdigest()
+    registration_date = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    cur.execute('INSERT INTO Users (username, password_hash,email,phone_number,registration_date,role,default_shipping_address) VALUES (?, ?, ?, ? , ?, ?, ?)', (Name, password_hash, Email, Phone, registration_date, Role,address ))
     conn.commit()
     customer_id = cur.lastrowid
     conn.close()
