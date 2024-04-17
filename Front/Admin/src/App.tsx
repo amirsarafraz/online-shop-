@@ -4,6 +4,7 @@ import {
   ListGuesser,
   EditGuesser,
   ShowGuesser,
+  houseDarkTheme,
 } from "react-admin";
 import { dataProvider } from "./dataProvider";
 import { authProvider } from "./authProvider";
@@ -23,9 +24,12 @@ import { Feedback_List } from "./resource db/Feedback_list";
 import { Feedback_Creat } from "./resource db/Feedback_Create";
 import { ShippingAddresses_List } from "./resource db/ShippingAddresses_List";
 import { ShippingAddresses_Creat } from "./resource db/ShippingAddresses_Create";
+import indigo from '@mui/material/colors/indigo';
+import pink from '@mui/material/colors/pink';
+import red from '@mui/material/colors/red';
 
 export const App = () => (
-  <Admin dataProvider={dataProvider} authProvider={authProvider}>
+  <Admin dataProvider={dataProvider} authProvider={authProvider} theme={houseDarkTheme}>
     <Resource
       name="Users"
       list={UsersList}
