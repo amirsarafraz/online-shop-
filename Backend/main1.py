@@ -689,10 +689,18 @@ def get_ShippingAddresses(id):
     }
     return final_ShippingAddresses
 
+# def create_ShippingAddresses(user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country):
+#     conn = get_db_connection()
+#     cur = conn.cursor()
+#     cur.execute('INSERT INTO ShippingAddresses (user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country) VALUES (?, ?, ?, ?,?, ?, ?, ?)', (user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country))
+#     conn.commit()
+#     ship_id = cur.lastrowid
+#     conn.close()
+#     return ship_id
 def create_ShippingAddresses(user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country):
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('INSERT INTO ShippingAddresses (user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country) VALUES (?, ?, ?, ?,?, ?, ?, ?)', (user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country))
+    cur.execute('INSERT INTO ShippingAddresses (customer_id, recipient_name, address_line1,address_line2, city, state,postal_code,country) VALUES (?, ?, ?, ?,?, ?, ?, ?)', (user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country))
     conn.commit()
     ship_id = cur.lastrowid
     conn.close()
@@ -708,7 +716,7 @@ def delete_ShippingAddresses(id):
 def update_ShippingAddresses(user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country,id):
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('UPDATE ShippingAddresses SET user_id = ?, recipient_name = ?, address_line1 = ?, address_line2 = ? ,city = ?, state = ?, postal_code = ?, country = ? WHERE address_id = ?', (user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country,id))
+    cur.execute('UPDATE ShippingAddresses SET customer_id = ?, recipient_name = ?, address_line1 = ?, address_line2 = ? ,city = ?, state = ?, postal_code = ?, country = ? WHERE address_id = ?', (user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country,id))
     conn.commit()
     conn.close()
     return get_ShippingAddresses(id)
@@ -728,6 +736,19 @@ def one_ShippingAddresses(id):
     if ShippingAddresses is None:
         return '', 404
     return jsonify(ShippingAddresses), 200
+
+# @app.route('/ShippingAddresses', methods=['POST'])
+# def add_ShippingAddresses():
+#     user_id = request.json['user_id']
+#     recipient_name = request.json['recipient_name']
+#     address_line1 = request.json['address_line1']
+#     address_line2 = request.json['address_line2']
+#     city = request.json['city']
+#     state = request.json['state']
+#     postal_code = request.json['postal_code']
+#     country = request.json['country']
+#     id = create_ShippingAddresses(user_id, recipient_name, address_line1,address_line2, city, state,postal_code,country)
+#     return get_ShippingAddresses(id), 201
 
 @app.route('/ShippingAddresses', methods=['POST'])
 def add_ShippingAddresses():
@@ -871,9 +892,7 @@ def update_AdminLog_by_id(id):
 # conn.commit()
 # product_id = cursor.lastrowid
 # conn.close()
-
 # return jsonify(get_product(product_id)), 201
-
 # products
 # def get_all_products():
 #     conn = get_db_connection()
